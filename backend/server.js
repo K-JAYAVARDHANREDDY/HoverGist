@@ -15,14 +15,13 @@ require('dotenv').config();
 const express = require('express');
 const cors    = require('cors');
 const path    = require('path');
-const OpenAI  = require('openai');
+const { AzureOpenAI } = require('openai');
 
 const { validateKey, generateKey, listKeys, DEMO_KEY } = require('./middleware/auth');
 const { rateLimit, getUsageStats } = require('./middleware/rateLimit');
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
-const OPENAI_MODEL    = process.env.OPENAI_MODEL    || 'gpt-4o-mini';
 const GIST_MAX_TOKENS = parseInt(process.env.GIST_MAX_TOKENS || '200', 10);
 
 // ─── Gist History Store ───────────────────────────────────────────────────────
@@ -37,21 +36,19 @@ function addToHistory(apiKey, entry) {
   if (arr.length > HISTORY_LIMIT) arr.pop();
 }
 
-// ─── OpenAI Client ────────────────────────────────────────────────────────────
-let openai;
-if (process.env.AZURE_OPENAI_API_KEY && process.env.AZURE_OPENAI_ENDPOINT) {
-  const { AzureOpenAI } = require('openai');
-  openai = new AzureOpenAI({
-    apiKey: process.env.AZURE_OPENAI_API_KEY,
-    endpoint: process.env.AZURE_OPENAI_ENDPOINT,
-    deployment: process.env.AZURE_OPENAI_DEPLOYMENT || process.env.OPENAI_MODEL,
-    apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-02-15-preview',
-  });
-} else {
-  openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+// ─── Azure OpenAI Client ──────────────────────────────────────────────────────
+if (!process.env.AZURE_OPENAI_API_KEY || !process.env.AZURE_OPENAI_ENDPOINT || !process.env.AZURE_OPENAI_DEPLOYMENT) {
+  console.error('\n❌ CRITICAL: Missing Azure OpenAI environment variables!');
+  console.error('Make sure AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, and AZURE_OPENAI_DEPLOYMENT are set in backend/.env\n');
+  process.exit(1);
 }
+
+const openai = new AzureOpenAI({
+  apiKey: process.env.AZURE_OPENAI_API_KEY,
+  endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+  deployment: process.env.AZURE_OPENAI_DEPLOYMENT,
+  apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-02-15-preview',
+});
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '*').split(',').map(s => s.trim());
@@ -91,11 +88,11 @@ app.use((req, _res, next) => {
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
-    service: 'HoverGist API',
+    service: 'HoverGist API (Azure)',
     version: '1.0.0',
-    model: OPENAI_MODEL,
+    deployment: process.env.AZURE_OPENAI_DEPLOYMENT,
     timestamp: new Date().toISOString(),
-    openAiKeySet: !!process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'sk-your-openai-key-here',
+    azureConfigured: !!process.env.AZURE_OPENAI_API_KEY,
   });
 });
 
@@ -174,7 +171,6 @@ Given a piece of text from a webpage section, return a clear, plain-language gis
     const startTime = Date.now();
 
     const completion = await openai.chat.completions.create({
-      model: OPENAI_MODEL,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user',   content: userPrompt },
@@ -210,7 +206,7 @@ Given a piece of text from a webpage section, return a clear, plain-language gis
       meta: {
         tokensUsed,
         latencyMs,
-        model:     OPENAI_MODEL,
+        model:     process.env.AZURE_OPENAI_DEPLOYMENT,
         charCount: trimmedText.length,
       },
     });
@@ -219,13 +215,13 @@ Given a piece of text from a webpage section, return a clear, plain-language gis
 
     if (err.status === 429) {
       return res.status(503).json({
-        error: 'OpenAI rate limit reached. Please try again shortly.',
+        error: 'Azure OpenAI rate limit reached. Please try again shortly.',
       });
     }
 
     if (err.status === 401) {
       return res.status(500).json({
-        error: 'OpenAI API key is invalid or missing. Check server .env.',
+        error: 'Azure OpenAI API key or Endpoint is invalid. Check server .env.',
       });
     }
 
@@ -252,26 +248,20 @@ app.use('/api', (req, res) => {
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  const hasRealKey = process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'sk-your-openai-key-here';
+  const hasAzureKey = !!process.env.AZURE_OPENAI_API_KEY;
   console.log(`
 ╔══════════════════════════════════════════════╗
-║         HoverGist API Server v1.0.0          ║
+║     HoverGist API (Azure Edition) v1.0.0     ║
 ╠══════════════════════════════════════════════╣
 ║  Demo site   : http://localhost:${PORT}          ║
 ║  API base    : http://localhost:${PORT}/api      ║
-║  Model       : ${OPENAI_MODEL.padEnd(28)}║
+║  Deployment  : ${process.env.AZURE_OPENAI_DEPLOYMENT?.padEnd(28) || 'Unknown'.padEnd(28)}║
 ║  Rate Limit  : ${(process.env.RATE_LIMIT || '200').padEnd(3)} calls / 24 hours           ║
 ╠══════════════════════════════════════════════╣
 ║  Demo Key    : ${DEMO_KEY.padEnd(28)}║
-║  OpenAI Key  : ${hasRealKey ? '✅ Set'.padEnd(28) : '⚠️  NOT SET — add to .env  '.padEnd(28)}║
-║  Azure OpenAI: ${process.env.AZURE_OPENAI_ENDPOINT ? '✅ Configured'.padEnd(28) : '❌ Not Configured'.padEnd(28)}║
+║  Azure Key   : ${hasAzureKey ? '✅ Set'.padEnd(28) : '⚠️  NOT SET — check .env     '.padEnd(28)}║
 ╚══════════════════════════════════════════════╝
   `);
-
-  if (!hasRealKey && !process.env.AZURE_OPENAI_ENDPOINT) {
-    console.warn('\n⚠️  WARNING: OPENAI_API_KEY or AZURE_OPENAI_ENDPOINT is not set in backend/.env');
-    console.warn('   Summarization calls will fail until you add a valid key.\n');
-  }
 });
 
 module.exports = app;
