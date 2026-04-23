@@ -506,15 +506,7 @@
   </aside>
 
   <!-- ── SDK ───────────────────────────────────────── -->
-  <!-- When served from http://localhost:3001, the SDK is available at /sdk/hovergist.sdk.js -->
-  <!-- When opened as a local file, fall back to the relative path -->
-  <script>
-    (function() {
-      var s = document.createElement('script');
-      s.src = location.protocol === 'file:' ? '../sdk/hovergist.sdk.js' : '/sdk/hovergist.sdk.js';
-      document.head.appendChild(s);
-    })();
-  </script>
+  <script src="../sdk/hovergist.sdk.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
