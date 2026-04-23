@@ -1,0 +1,12 @@
+{
+  "name": "hovergist",
+  "version": "1.0.0",
+  "description": "HoverGist — AI-powered section summarizer SDK for any website",
+  "private": true,
+  "scripts": {
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "install:backend": "cd backend && npm install",
+    "setup": "npm run install:backend && echo \"\\n✅ Setup complete! Add your OpenAI key to backend/.env then run: npm start\""
+  }
+}

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HoverGist — AI Section Summarizer SDK Demo</title>
+  <meta name="description" content="HoverGist is an embeddable SDK that lets users press Alt and hover over any section to get an instant GPT-4 powered summary." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────── -->
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="container">
+      <a href="#" class="navbar-brand" id="brand-link">
+        <div class="brand-icon">✦</div>
+        HoverGist
+      </a>
+      <div class="navbar-links">
+        <a href="#features" class="btn btn-ghost">Features</a>
+        <a href="#how-it-works" class="btn btn-ghost">Docs</a>
+        <button id="activate-btn" class="btn btn-primary" aria-label="Activate HoverGist">
+          <span>⚡</span> Try It Now
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────── -->
+  <section class="hero" aria-label="Hero">
+    <div class="container">
+      <div class="hero-badge">✦ Powered by GPT-4 · Zero Dependencies</div>
+
+      <h1>Understand Any Page<br />In One Hover</h1>
+
+      <p class="hero-sub">
+        HoverGist is an embeddable SDK that lets your users hold <strong style="color:#a5b4fc">Alt</strong>
+        and click any section to get an instant AI-powered gist — without leaving the page.
+      </p>
+
+      <div class="hero-actions">
+        <button id="hero-activate-btn" class="btn btn-primary btn-lg" aria-label="Activate demo">
+          <span>⚡</span> Activate Demo
+        </button>
+        <a href="#how-it-works" class="btn btn-ghost btn-lg">View SDK Docs →</a>
+      </div>
+
+      <p class="hero-hint">
+        Press <kbd class="kbd">Alt</kbd> anywhere on this page to toggle HoverGist
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Demo Banner ────────────────────────────────── -->
+  <div class="container">
+    <div class="demo-banner" role="note" aria-label="Demo instructions">
+      <div class="demo-banner-icon">🎯</div>
+      <div class="demo-banner-text">
+        <h3>Try it on this page!</h3>
+        <p>
+          Press <kbd class="kbd">Alt</kbd> to activate HoverGist, then <strong>click any section below</strong>.
+          GPT-4 will instantly summarize it in a floating tooltip. Press <kbd class="kbd">Alt</kbd> again or <kbd class="kbd">Esc</kbd> to exit.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Features ──────────────────────────────────── -->
+  <section class="features-section" id="features" aria-label="Features">
+    <div class="container">
+      <div class="features-header">
+        <div class="section-label">Features</div>
+        <h2 class="section-title">Everything you need,<br />nothing you don't</h2>
+        <p class="section-desc">
+          A single JS file, zero dependencies, and a powerful API gateway
+          that handles rate limiting, authentication, and GPT-4 integration for you.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card" data-hg-target>
+          <div class="feature-icon">🧠</div>
+          <h3>GPT-4 Powered Summaries</h3>
+          <p>
+            Uses OpenAI's GPT-4 to generate concise, intelligent gists of any section —
+            from product descriptions to complex technical documentation.
+            The model is tuned specifically for web content summarization at 120 words or fewer.
+          </p>
+        </div>
+
+        <div class="feature-card" data-hg-target>
+          <div class="feature-icon">⚡</div>
+          <h3>One-Key Activation</h3>
+          <p>
+            Users press <strong>Alt</strong> to enter hover mode. The cursor changes, sections glow,
+            and clicking any text-rich element triggers instant summarization.
+            No UI clutter, no popups interrupting the reading flow until requested.
+          </p>
+        </div>
+
+        <div class="feature-card" data-hg-target>
+          <div class="feature-icon">🔑</div>
+          <h3>API Gateway with Rate Limiting</h3>
+          <p>
+            Each developer API key is limited to 200 GPT-4 calls per 24 hours,
+            enforced at the server level. Real-time usage stats are surfaced in the
+            tooltip and the developer config panel. Swap in Redis for distributed rate limiting at scale.
+          </p>
+        </div>
+
+        <div class="feature-card" data-hg-target>
+          <div class="feature-icon">🎨</div>
+          <h3>Fully Customizable</h3>
+          <p>
+            Configure the highlight color, tooltip theme (dark/light/auto), trigger key,
+            max gist word count, and scoped CSS selectors. All via a simple
+            <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:4px">HoverGist.init()</code> call.
+          </p>
+        </div>
+
+        <div class="feature-card" data-hg-target>
+          <div class="feature-icon">📦</div>
+          <h3>Drop-in SDK</h3>
+          <p>
+            A single self-contained JavaScript file — no build step, no dependencies.
+            Include via a <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:4px">&lt;script&gt;</code> tag or import as a CommonJS/AMD module.
+            Works on any website, any framework, any era.
+          </p>
+        </div>
+
+        <div class="feature-card" data-hg-target>
+          <div class="feature-icon">🛡️</div>
+          <h3>Secure by Design</h3>
+          <p>
+            API keys are validated server-side on every request. CORS is enforced
+            per-domain. Text is capped at 4,000 characters before reaching GPT-4
+            to prevent abuse and minimize token costs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Articles ───────────────────────────────────── -->
+  <section class="article-section" aria-label="Sample articles">
+    <div class="container">
+      <div class="section-label">Content Demo</div>
+      <h2 class="section-title">Try summarizing these articles</h2>
+      <p class="section-desc">
+        Activate HoverGist and click any article card below to see GPT-4 summarize it in real time.
+      </p>
+
+      <div class="article-grid">
+        <article class="article-card">
+          <span class="article-tag tag-ai">AI / ML</span>
+          <h3>Retrieval-Augmented Generation: Why LLMs Need External Memory</h3>
+          <p>
+            Large language models like GPT-4 are powerful but fundamentally limited by their training cutoff.
+            RAG (Retrieval-Augmented Generation) solves this by dynamically fetching relevant documents at inference time,
+            injecting them into the model's context window before generating a response.
+            This hybrid architecture combines the fluency of generative AI with the precision of a search index,
+            enabling accurate, up-to-date answers without expensive fine-tuning.
+            Vector databases like Pinecone, Weaviate, or pgvector are typically used to store embeddings and retrieve
+            semantically similar chunks in milliseconds. RAG is now the de facto standard for enterprise chatbots,
+            customer support agents, and knowledge management systems.
+          </p>
+          <div class="article-meta">
+            <span>🕐 5 min read</span>
+            <span>Apr 2025</span>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <span class="article-tag tag-perf">Performance</span>
+          <h3>Why Your Node.js App Is Leaking Memory (And How to Fix It)</h3>
+          <p>
+            Memory leaks in Node.js are notoriously hard to diagnose because V8's garbage collector usually
+            handles cleanup automatically. The most common culprits are event listeners that are never removed,
+            closures holding references to large objects, and global caches that grow without a size limit.
+            Using <code>process.memoryUsage()</code> can surface heap growth trends, while Chrome DevTools'
+            heap snapshot tool lets you compare allocations over time. Tools like clinic.js and 0x can profile
+            the event loop in production. The fix is usually straightforward: WeakMap for caches, explicit
+            <code>removeEventListener</code> calls in cleanup functions, and bounded in-memory stores with LRU eviction.
+          </p>
+          <div class="article-meta">
+            <span>🕐 7 min read</span>
+            <span>Mar 2025</span>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <span class="article-tag tag-design">Design Systems</span>
+          <h3>Tokens, Themes & Components: Building a Scalable Design System in 2025</h3>
+          <p>
+            A robust design system starts with design tokens — primitives like color, spacing, radius, and typography
+            that are defined once and consumed everywhere. Tools like Style Dictionary or Tokens Studio for Figma
+            allow tokens to be exported to CSS custom properties, Tailwind config, iOS Swift constants, and Android
+            XML simultaneously. Above tokens sit semantic aliases (e.g. <em>surface-primary</em> → <em>gray-900</em>)
+            that make theming effortless. Components are built on top of semantics, not raw values, meaning a single
+            token change can propagate to every button, card, and input across your entire product. In 2025,
+            the most successful teams ship their design system as a versioned npm package with Storybook documentation.
+          </p>
+          <div class="article-meta">
+            <span>🕐 6 min read</span>
+            <span>Feb 2025</span>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <span class="article-tag tag-security">Security</span>
+          <h3>The Modern Developer's Guide to OWASP Top 10 in 2025</h3>
+          <p>
+            The OWASP Top 10 remains the most referenced checklist for web application security.
+            Broken access control still tops the list, followed by cryptographic failures and injection attacks.
+            Modern mitigations include parameterized queries for SQL injection, output encoding for XSS,
+            PKCE for OAuth flows, and strict CSP headers. Server-side request forgery (SSRF) has risen
+            dramatically with the proliferation of cloud metadata APIs — always validate and allowlist outbound
+            HTTP calls from your backend. Insecure design is a new category emphasizing that security must be
+            baked into architecture from day one, not bolted on after. Regular dependency audits with tools
+            like npm audit, Snyk, or Dependabot are now table stakes for any production application.
+          </p>
+          <div class="article-meta">
+            <span>🕐 8 min read</span>
+            <span>Jan 2025</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stats ──────────────────────────────────────── -->
+  <section class="stats-section" aria-label="SDK Stats">
+    <div class="container">
+      <div class="section-label">By the numbers</div>
+      <h2 class="section-title">Built for production</h2>
+
+      <div class="stats-grid">
+        <div class="stat-card" data-hg-target>
+          <div class="stat-number">~12kb</div>
+          <div class="stat-label">SDK Bundle Size</div>
+          <div class="stat-sub">Zero dependencies</div>
+        </div>
+        <div class="stat-card" data-hg-target>
+          <div class="stat-number">200</div>
+          <div class="stat-label">API Calls / Day</div>
+          <div class="stat-sub">Per API key</div>
+        </div>
+        <div class="stat-card" data-hg-target>
+          <div class="stat-number">&lt;1.5s</div>
+          <div class="stat-label">Average Latency</div>
+          <div class="stat-sub">GPT-4 response</div>
+        </div>
+        <div class="stat-card" data-hg-target>
+          <div class="stat-number">GPT-4</div>
+          <div class="stat-label">AI Model</div>
+          <div class="stat-sub">OpenAI latest</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ───────────────────────────────────────── -->
+  <section class="faq-section" id="faq" aria-label="FAQ">
+    <div class="container">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">Common questions</h2>
+
+      <div class="faq-list" role="list">
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" aria-expanded="false" id="faq-q1">
+            How does the rate limiting work?
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region" aria-labelledby="faq-q1">
+            Each developer API key is allocated 200 GPT-4 calls per 24-hour window.
+            The server tracks usage in memory (in-memory store, swap to Redis for distributed deployments).
+            When the limit is hit, the API returns a 429 with a reset timestamp. Remaining calls are shown
+            live in the HoverGist tooltip and the config panel.
+          </div>
+        </div>
+
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" aria-expanded="false" id="faq-q2">
+            Can I use this on any website?
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region" aria-labelledby="faq-q2">
+            Yes. The SDK is a single vanilla JS file with no dependencies.
+            Include it with a &lt;script&gt; tag, call HoverGist.init(), and provide your API key.
+            It works on static HTML sites, React, Vue, Angular, Next.js — any web environment.
+          </div>
+        </div>
+
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" aria-expanded="false" id="faq-q3">
+            Is the user's page content sent to OpenAI?
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region" aria-labelledby="faq-q3">
+            Only the text of the specific clicked element is sent, capped at 4,000 characters.
+            The rest of the page is never transmitted. Text goes to your HoverGist backend server,
+            which then queries OpenAI. You control the backend and data flow.
+          </div>
+        </div>
+
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" aria-expanded="false" id="faq-q4">
+            Can I change the trigger key from Alt?
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region" aria-labelledby="faq-q4">
+            Absolutely. Set triggerKey in your HoverGist.init() config to any key name
+            (e.g. 'Control', 'Shift', 'Meta', or 'h'). You can also call HoverGist.activate()
+            and HoverGist.deactivate() programmatically, for example from a button click.
+          </div>
+        </div>
+
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" aria-expanded="false" id="faq-q5">
+            What if my OpenAI key runs out of credits?
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region" aria-labelledby="faq-q5">
+            The backend forwards OpenAI's 429 or 401 errors to the client with a user-friendly message
+            shown in the tooltip. No crashes, no unhandled errors. The SDK's onError callback also fires
+            so you can show custom UI or log the event.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How to Install ─────────────────────────────── -->
+  <section class="code-section" id="how-it-works" aria-label="Integration guide">
+    <div class="container">
+      <div class="section-label">SDK Integration</div>
+      <h2 class="section-title">Add to your site in 3 lines</h2>
+      <p class="section-desc">
+        Drop the script in, call init, and your users get instant AI summaries on hover.
+      </p>
+
+      <div class="code-block-wrapper">
+        <div class="code-block-header">
+          <div class="code-dots">
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+          </div>
+          <span class="code-label">index.html</span>
+          <button class="copy-btn" id="copy-snippet" aria-label="Copy code snippet">Copy</button>
+        </div>
+        <pre id="code-snippet"><span class="tok-comment">&lt;!-- 1. Include the SDK --&gt;</span>
+<span class="tok-keyword">&lt;script</span> <span class="tok-obj">src</span>=<span class="tok-string">"https://your-cdn.com/hovergist.sdk.js"</span><span class="tok-keyword">&gt;&lt;/script&gt;</span>
+
+<span class="tok-comment">&lt;!-- 2. Initialize --&gt;</span>
+<span class="tok-keyword">&lt;script&gt;</span>
+  <span class="tok-obj">HoverGist</span>.<span class="tok-func">init</span>({
+    apiKey:      <span class="tok-string">'hg_your_key_here'</span>,
+    backendUrl:  <span class="tok-string">'https://your-backend.com'</span>,
+    theme:       <span class="tok-string">'dark'</span>,          <span class="tok-comment">// 'dark' | 'light' | 'auto'</span>
+    triggerKey:  <span class="tok-string">'Alt'</span>,           <span class="tok-comment">// key to activate</span>
+    highlightColor: <span class="tok-string">'#6366f1'</span>,    <span class="tok-comment">// hover ring color</span>
+    maxWords:    <span class="tok-number">120</span>,              <span class="tok-comment">// gist word limit</span>
+
+    <span class="tok-comment">// Optional callbacks</span>
+    onGist:      (gist, el) =&gt; <span class="tok-func">console</span>.<span class="tok-func">log</span>(gist),
+    onActivate:  () =&gt; <span class="tok-func">console</span>.<span class="tok-func">log</span>(<span class="tok-string">'Active!'</span>),
+  });
+<span class="tok-keyword">&lt;/script&gt;</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────── -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <p>
+        <strong>HoverGist SDK v1.0.0</strong> ·
+        Built with <a href="https://platform.openai.com" target="_blank" rel="noopener">OpenAI GPT-4</a> ·
+        Demo site for SDK testing
+      </p>
+      <p style="margin-top:8px;font-size:12px">
+        Configure the SDK using the ⚙️ panel (bottom left) · Press <kbd class="kbd">Alt</kbd> to activate
+      </p>
+    </div>
+  </footer>
+
+  <!-- ── Config Trigger ─────────────────────────────── -->
+  <button id="config-trigger" aria-label="Open developer configuration panel" title="Developer config">⚙️</button>
+
+  <!-- ── Config Panel ──────────────────────────────── -->
+  <aside id="config-panel" role="complementary" aria-label="Developer configuration">
+    <div class="panel-header">
+      <h2>⚙️ HoverGist Config</h2>
+      <button class="panel-close" id="panel-close" aria-label="Close config panel">✕</button>
+    </div>
+
+    <!-- Panel Tabs -->
+    <div class="panel-tabs">
+      <button class="panel-tab active" id="tab-config" data-tab="config">Config</button>
+      <button class="panel-tab" id="tab-history" data-tab="history">History <span id="history-badge" class="history-badge">0</span></button>
+    </div>
+
+    <div class="panel-body">
+
+      <!-- API Key -->
+      <div class="form-group">
+        <label class="form-label" for="input-api-key">API Key</label>
+        <input
+          type="text"
+          id="input-api-key"
+          class="form-input"
+          placeholder="hg_demo_key_00000000"
+          value="hg_demo_key_00000000"
+          spellcheck="false"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Backend URL -->
+      <div class="form-group">
+        <label class="form-label" for="input-backend">Backend URL</label>
+        <input
+          type="text"
+          id="input-backend"
+          class="form-input"
+          placeholder="http://localhost:3001"
+          value="http://localhost:3001"
+        />
+      </div>
+
+      <!-- Theme -->
+      <div class="form-group">
+        <label class="form-label" for="input-theme">Tooltip Theme</label>
+        <select id="input-theme" class="form-select">
+          <option value="dark" selected>Dark</option>
+          <option value="light">Light</option>
+          <option value="auto">Auto (System)</option>
+        </select>
+      </div>
+
+      <!-- Highlight Color -->
+      <div class="form-group">
+        <label class="form-label">Highlight Color</label>
+        <div class="color-row">
+          <div class="color-preview" id="color-preview" style="background:#6366f1"></div>
+          <input type="color" id="input-color" value="#6366f1" aria-label="Choose highlight color" />
+          <input type="text" id="input-color-text" class="form-input" value="#6366f1" maxlength="7" />
+        </div>
+      </div>
+
+      <!-- Max Words -->
+      <div class="form-group">
+        <label class="form-label" for="input-words">Max Gist Words: <span id="words-display">120</span></label>
+        <input type="range" id="input-words" min="40" max="150" value="120" style="width:100%;accent-color:#6366f1" />
+      </div>
+
+      <!-- Usage Bar -->
+      <div class="usage-bar-wrapper">
+        <div class="usage-header">
+          <span class="form-label">API Usage Today</span>
+          <span class="usage-count" id="usage-count">0 <span>/ 200</span></span>
+        </div>
+        <div class="usage-bar-track">
+          <div class="usage-bar-fill" id="usage-bar" style="width:0%"></div>
+        </div>
+        <div class="usage-reset" id="usage-reset-text">Resets in 24 hours</div>
+      </div>
+
+      <!-- SDK Status toggle -->
+      <div class="switch-row">
+        <span class="switch-label">HoverGist Active</span>
+        <div class="toggle" id="sdk-toggle" role="switch" aria-checked="false" tabindex="0" aria-label="Toggle HoverGist"></div>
+      </div>
+
+      <!-- Apply button -->
+      <button class="btn btn-primary" id="apply-config" style="width:100%;justify-content:center;border-radius:10px;padding:13px">
+        ✓ Apply Configuration
+      </button>
+
+      <!-- Generate API Key -->
+      <div style="text-align:center">
+        <button class="btn btn-ghost" id="gen-key-btn" style="font-size:12px;color:var(--text-3)">
+          Generate new API key →
+        </button>
+      </div>
+
+      <div id="gen-key-result" style="display:none;background:var(--bg-2);border:1px solid var(--border);
+           border-radius:8px;padding:12px;font-size:12px;font-family:var(--mono);color:var(--text-1);
+           word-break:break-all;line-height:1.6"></div>
+
+    </div><!-- /#panel-body config -->
+
+    <!-- History Tab Content -->
+    <div class="panel-body" id="panel-history" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span class="form-label">Recent Gists</span>
+        <button class="btn btn-ghost" id="refresh-history-btn" style="padding:4px 12px;font-size:12px">↻ Refresh</button>
+      </div>
+      <div id="history-list" style="display:flex;flex-direction:column;gap:10px">
+        <div style="color:var(--text-3);font-size:13px;text-align:center;padding:24px 0">
+          No gists yet — activate HoverGist and click a section!
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── SDK ───────────────────────────────────────── -->
+  <!-- When served from http://localhost:3001, the SDK is available at /sdk/hovergist.sdk.js -->
+  <!-- When opened as a local file, fall back to the relative path -->
+  <script>
+    (function() {
+      var s = document.createElement('script');
+      s.src = location.protocol === 'file:' ? '../sdk/hovergist.sdk.js' : '/sdk/hovergist.sdk.js';
+      document.head.appendChild(s);
+    })();
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
