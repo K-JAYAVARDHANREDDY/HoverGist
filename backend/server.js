@@ -38,9 +38,20 @@ function addToHistory(apiKey, entry) {
 }
 
 // ─── OpenAI Client ────────────────────────────────────────────────────────────
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openai;
+if (process.env.AZURE_OPENAI_API_KEY && process.env.AZURE_OPENAI_ENDPOINT) {
+  const { AzureOpenAI } = require('openai');
+  openai = new AzureOpenAI({
+    apiKey: process.env.AZURE_OPENAI_API_KEY,
+    endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+    deployment: process.env.AZURE_OPENAI_DEPLOYMENT || process.env.OPENAI_MODEL,
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || '2024-02-15-preview',
+  });
+} else {
+  openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+}
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '*').split(',').map(s => s.trim());
@@ -253,12 +264,13 @@ app.listen(PORT, () => {
 ╠══════════════════════════════════════════════╣
 ║  Demo Key    : ${DEMO_KEY.padEnd(28)}║
 ║  OpenAI Key  : ${hasRealKey ? '✅ Set'.padEnd(28) : '⚠️  NOT SET — add to .env  '.padEnd(28)}║
+║  Azure OpenAI: ${process.env.AZURE_OPENAI_ENDPOINT ? '✅ Configured'.padEnd(28) : '❌ Not Configured'.padEnd(28)}║
 ╚══════════════════════════════════════════════╝
   `);
 
-  if (!hasRealKey) {
-    console.warn('\n⚠️  WARNING: OPENAI_API_KEY is not set in backend/.env');
-    console.warn('   GPT-4 calls will fail until you add a valid key.\n');
+  if (!hasRealKey && !process.env.AZURE_OPENAI_ENDPOINT) {
+    console.warn('\n⚠️  WARNING: OPENAI_API_KEY or AZURE_OPENAI_ENDPOINT is not set in backend/.env');
+    console.warn('   Summarization calls will fail until you add a valid key.\n');
   }
 });
 
