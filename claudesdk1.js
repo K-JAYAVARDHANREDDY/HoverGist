@@ -627,10 +627,15 @@
       });
       backdrop.addEventListener('click', function (e) { if (e.target === backdrop) close(); });
 
+      // Double-rAF: ensures the browser has painted the initial opacity:0 /
+      // translateY(32px) state before we toggle the class. A single rAF fires
+      // before the first paint, so the CSS transition would have no start-state.
       requestAnimationFrame(function () {
-        backdrop.classList.add('hgo-ob-in');
-        const modal = document.getElementById('hgo-ob-modal');
-        if (modal) modal.classList.add('hgo-ob-in');
+        requestAnimationFrame(function () {
+          backdrop.classList.add('hgo-ob-in');
+          const modal = document.getElementById('hgo-ob-modal');
+          if (modal) modal.classList.add('hgo-ob-in');
+        });
       });
 
       setTimeout(function () { obRunAnimation(obConfig.triggerKey, currentRunId); }, 600);
